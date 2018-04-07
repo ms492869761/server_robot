@@ -36,8 +36,7 @@ public class WSClient {
 			
 			@Override
 			public void onError(Exception arg0) {
-				// TODO Auto-generated method stub
-				
+				arg0.printStackTrace();
 			}
 			
 			@Override
