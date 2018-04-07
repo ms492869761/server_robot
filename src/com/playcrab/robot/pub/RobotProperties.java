@@ -31,12 +31,13 @@ public class RobotProperties {
 			System.out.println(userDir+"/config/robot.properties");
 			properties.load(new FileInputStream(userDir+"/config/robot.properties"));
 			this.webSocketUrl = properties.getProperty("robot.websocket.url");
-			this.webSocketPort=Integer.parseInt(properties.getProperty("robot.websocket.port"));
+			this.webSocketPort=Integer.parseInt(properties.getProperty("robot.websocket.port").trim());
 			this.httpUrl=properties.getProperty("robot.http.url");
-			this.httpPort=Integer.parseInt(properties.getProperty("robot.http.port"));
+			this.httpPort=Integer.parseInt(properties.getProperty("robot.http.port").trim());
 			
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}
