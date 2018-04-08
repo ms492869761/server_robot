@@ -1,19 +1,29 @@
 package com.playcrab.core.net.websocket;
 
 import java.net.URI;
+import java.nio.ByteBuffer;
 
 import org.java_websocket.WebSocket.READYSTATE;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-import com.playcrab.net.kakura.msg.KakuraMessage;
-import com.playcrab.net.kakura.msg.KakuraPackage;
+import com.playcrab.core.net.encode.IWebSocketDecoder;
+import com.playcrab.core.robot.IRobot;
 import com.playcrab.robot.pub.RobotProperties;
 
 public class WSClient {
 	private WebSocketClient client;
 	
-	private String defaultAesKey="ilo24wEFS*^^*2Ewilo24wEFS*^^*2Ew";
+	
+	
+	private IWebSocketDecoder iWebSocketDecoder;
+	
+	private IRobot iRobot;
+	
+	public WSClient(IWebSocketDecoder decoder,IRobot iRobot) {
+		this.iWebSocketDecoder=decoder;
+		this.iRobot=iRobot;
+	}
 	
 	public void init() throws Exception {
 		String webSocketUrl = RobotProperties.getInstance().getWebSocketUrl();
@@ -24,25 +34,31 @@ public class WSClient {
 			
 			@Override
 			public void onOpen(ServerHandshake arg0) {
-				// TODO Auto-generated method stub
-				
+				iRobot.connectSuccess();
 			}
 			
 			@Override
 			public void onMessage(String arg0) {
-				// TODO Auto-generated method stub
 				
+			}
+			
+			@Override
+			public void onMessage(ByteBuffer bytes) {
+				int remaining = bytes.remaining();
+				byte[] body=new byte[remaining];
+				bytes.get(body);
+				String decodeMsg = iWebSocketDecoder.decodeMsg(body);
+				iRobot.onMessage(decodeMsg);
 			}
 			
 			@Override
 			public void onError(Exception arg0) {
-				arg0.printStackTrace();
+				iRobot.onError(arg0);
 			}
 			
 			@Override
 			public void onClose(int arg0, String arg1, boolean arg2) {
-				// TODO Auto-generated method stub
-				
+				iRobot.onClose();
 			}
 		};
 		
@@ -53,24 +69,17 @@ public class WSClient {
 	}
 	
 	public void send(String str) throws Exception {
-		sendMessage(1, 1, str, 1);
+		if(iWebSocketDecoder==null) {
+			throw new Exception("iWebSocketDecoder can't be null");
+		}
+		byte[] encodeMsg = iWebSocketDecoder.encodeMsg(str);
+		client.send(encodeMsg);
 	}
 	
-	public boolean sendMessage(int opcode, int reqId, String value, int messageType) throws Exception {
-        KakuraPackage kp = new KakuraPackage();
-        kp.requestId = reqId;
-        kp.value = value.getBytes("UTF-8");
-        kp.opCode = opcode;
-        byte[] createMessage = KakuraMessage.createMessage(messageType, kp, defaultAesKey);
-        client.send(createMessage);
-		return true;
+	
+	public void close() {
+		client.close();
 	}
 	
-	public static void main(String[] args) throws Exception{
-		RobotProperties.getInstance().init();
-		WSClient client=new WSClient();
-		client.init();
-		client.send("asdfasdfasfd");
-	}
 	
 }
