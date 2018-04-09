@@ -1,30 +1,34 @@
 package com.playcrab.robot.robot;
 
 import com.alibaba.fastjson.JSONObject;
-import com.playcrab.core.net.websocket.WSClient;
-import com.playcrab.core.robot.IRobot;
-import com.playcrab.robot.RobotWebSocketDecoder;
+import com.playcrab.core.net.encode.IWebSocketDecoder;
+import com.playcrab.core.robot.BaseRobot;
+import com.playcrab.robot.robot.decoder.RobotWebSocketDecoder;
 
-public class Robot implements IRobot {
-	
-	private WSClient wsClient;
-	
-	private boolean isConnection=false;
+public class Robot extends BaseRobot {
 	
 	public Robot() {
-		wsClient=new WSClient(new RobotWebSocketDecoder(), this);
-		
-		
-		
+		this(new RobotWebSocketDecoder());
 	}
+	
+	public Robot(IWebSocketDecoder iWebSocketDecoder) {
+		super(iWebSocketDecoder);
+	}
+
+	private boolean isConnection=false;
+	
+	
 	
 	
 	@Override
 	public void connectSuccess() {
 		this.isConnection=true;
-
 	}
-
+	
+	public boolean isConnection() {
+		return isConnection;
+	}
+	
 	@Override
 	public void onMessage(String arg0) {
 		JSONObject parse = (JSONObject)JSONObject.parse(arg0);

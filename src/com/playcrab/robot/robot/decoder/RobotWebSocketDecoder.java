@@ -1,4 +1,4 @@
-package com.playcrab.robot;
+package com.playcrab.robot.robot.decoder;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -44,5 +44,10 @@ public class RobotWebSocketDecoder implements IWebSocketDecoder {
 		}
 		return null;
 	}
-
+	
+	
+	public void setDefaultAesKey(String defaultAesKey) {
+		this.defaultAesKey = defaultAesKey;
+	}
+	
 }

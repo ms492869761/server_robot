@@ -8,7 +8,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import com.playcrab.core.net.encode.IWebSocketDecoder;
-import com.playcrab.core.robot.IRobot;
+import com.playcrab.core.robot.BaseRobot;
 import com.playcrab.robot.pub.RobotProperties;
 
 public class WSClient {
@@ -18,9 +18,9 @@ public class WSClient {
 	
 	private IWebSocketDecoder iWebSocketDecoder;
 	
-	private IRobot iRobot;
+	private BaseRobot iRobot;
 	
-	public WSClient(IWebSocketDecoder decoder,IRobot iRobot) {
+	public WSClient(IWebSocketDecoder decoder,BaseRobot iRobot) {
 		this.iWebSocketDecoder=decoder;
 		this.iRobot=iRobot;
 	}
