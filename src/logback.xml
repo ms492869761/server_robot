@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss} %-5level [%thread][%file:%line] : %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.home}/console.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.home}/console.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>%d{HH:mm:ss} %-5level [%thread][%file:%line] : %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.home}/error.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.home}/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>%d{HH:mm:ss} %-5level [%thread][%file:%line] : %msg%n</pattern>
+		</encoder>
+
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+	</appender>
+	    <appender name="ROBOTSTATUS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/robotstatus.log</file>
+
+        <encoder>
+            <pattern>%d{HH:mm:ss} %-5level [%thread][%file:%line] : %msg%n</pattern>
+        </encoder>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.home}/robotstatus.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        
+    </appender>
+
+	<root name="com.playcrab" level="INFO">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="ERROR"/>
+	</root>
+	<logger name="robotStatus" level="DEBUG">
+		<appender-ref ref="ROBOTSTATUS" />
+	</logger>
+</configuration>

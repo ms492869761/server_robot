@@ -23,6 +23,18 @@ public class RobotProperties {
 	
 	private int httpPort;
 	
+	private String defaultAesKey;
+	
+	private String connectAesKey;
+	
+	private int threadCount;
+	
+	private int battleIdBegin;
+	
+	private int battleIdEnd;
+	
+	private int battleCount;
+	
 	
 	public void init() {
 		try {
@@ -34,8 +46,12 @@ public class RobotProperties {
 			this.webSocketPort=Integer.parseInt(properties.getProperty("robot.websocket.port").trim());
 			this.httpUrl=properties.getProperty("robot.http.url");
 			this.httpPort=Integer.parseInt(properties.getProperty("robot.http.port").trim());
-			
-			
+			this.defaultAesKey=properties.getProperty("robot.defaultAesKey");
+			this.connectAesKey=properties.getProperty("robot.connectAesKey");
+			this.threadCount=Integer.parseInt(properties.getProperty("robot.threadCount"));
+			this.battleIdBegin=Integer.parseInt(properties.getProperty("robot.battleIdBegin"));
+			this.battleIdEnd=Integer.parseInt(properties.getProperty("robot.battleIdEnd"));
+			this.battleCount=Integer.parseInt(properties.getProperty("robot.battleCount"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -78,6 +94,59 @@ public class RobotProperties {
 		this.httpUrl = httpUrl;
 	}
 	
+	public String getDefaultAesKey() {
+		return defaultAesKey;
+	}
+	
+	@Deprecated
+	public void setDefaultAesKey(String defaultAesKey) {
+		this.defaultAesKey = defaultAesKey;
+	}
+	
+	public String getConnectAesKey() {
+		return connectAesKey;
+	}
+	
+	@Deprecated
+	public void setConnectAesKey(String connectAesKey) {
+		this.connectAesKey = connectAesKey;
+	}
+	
+	public int getThreadCount() {
+		return threadCount;
+	}
+	
+	@Deprecated
+	public void setThreadCount(int threadCount) {
+		this.threadCount = threadCount;
+	}
+	
+	public int getBattleCount() {
+		return battleCount;
+	}
+	
+	@Deprecated
+	public void setBattleCount(int battleCount) {
+		this.battleCount = battleCount;
+	}
+	
+	public int getBattleIdBegin() {
+		return battleIdBegin;
+	}
+	
+	@Deprecated
+	public void setBattleIdBegin(int battleIdBegin) {
+		this.battleIdBegin = battleIdBegin;
+	}
+	
+	public int getBattleIdEnd() {
+		return battleIdEnd;
+	}
+	
+	@Deprecated
+	public void setBattleIdEnd(int battleIdEnd) {
+		this.battleIdEnd = battleIdEnd;
+	}
 	
 	
 }

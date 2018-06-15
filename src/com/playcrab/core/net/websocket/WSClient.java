@@ -3,7 +3,6 @@ package com.playcrab.core.net.websocket;
 import java.net.URI;
 import java.nio.ByteBuffer;
 
-import org.java_websocket.WebSocket.READYSTATE;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -20,9 +19,10 @@ public class WSClient {
 	
 	private BaseRobot iRobot;
 	
-	public WSClient(IWebSocketDecoder decoder,BaseRobot iRobot) {
+	public WSClient(IWebSocketDecoder decoder,BaseRobot iRobot) throws Exception {
 		this.iWebSocketDecoder=decoder;
 		this.iRobot=iRobot;
+		init();
 	}
 	
 	public void init() throws Exception {
@@ -62,10 +62,10 @@ public class WSClient {
 			}
 		};
 		
+	}
+	
+	public void connect() {
 		client.connect();
-		while(!client.getReadyState().equals(READYSTATE.OPEN)) {
-			System.out.println("还没有打开");
-		}
 	}
 	
 	public void send(String str) throws Exception {

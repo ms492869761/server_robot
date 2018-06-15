@@ -1,0 +1,6 @@
+17:41:00 DEBUG [DefaultQuartzScheduler_Worker-1][LogMethodStatusAction.java:24] : method use time:	
+17:42:00 DEBUG [DefaultQuartzScheduler_Worker-1][LogMethodStatusAction.java:24] : method use time:	
+17:43:00 DEBUG [DefaultQuartzScheduler_Worker-1][LogMethodStatusAction.java:24] : method use time:	battle.battleEnter:101ms	battle.battleOperation:4ms	battle.battleReady:4ms	debug.command2:7ms	
+17:44:00 DEBUG [DefaultQuartzScheduler_Worker-2][LogMethodStatusAction.java:24] : method use time:	battle.battleEnter:0ms	battle.battleOperation:3ms	battle.battleReady:0ms	debug.command2:0ms	
+17:45:00 DEBUG [DefaultQuartzScheduler_Worker-3][LogMethodStatusAction.java:24] : method use time:	battle.battleEnter:0ms	battle.battleOperation:2ms	battle.battleReady:0ms	debug.command2:0ms	
+17:46:00 DEBUG [DefaultQuartzScheduler_Worker-1][LogMethodStatusAction.java:24] : method use time:	battle.battleEnter:9ms	battle.battleOperation:2ms	battle.battleReady:3ms	debug.command2:5ms	

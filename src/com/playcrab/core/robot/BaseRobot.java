@@ -1,13 +1,17 @@
 package com.playcrab.core.robot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.playcrab.core.controller.BaseController;
 import com.playcrab.core.net.encode.IWebSocketDecoder;
-import com.playcrab.core.net.websocket.WSClient;
+import com.playcrab.core.net.websocket.NWSClient;
+import com.playcrab.core.service.RobotCoreManager;
 import com.playcrab.core.type.ConnectTypeEnum;
 
 /**
@@ -24,16 +28,22 @@ public abstract class BaseRobot {
 	@SuppressWarnings("rawtypes")
 	protected List<BaseController> controllerList=new ArrayList<>();
 	/** websocket连接客户端*/
-	private WSClient wsClient;
+	private NWSClient wsClient;
 	/** 当前机器人的连接类型 */
 	private ConnectTypeEnum connectTypeEnum;
+	/** 解码器*/
+	protected IWebSocketDecoder iWebSocketDecoder;
+	
+	
 	
 	/**
 	 * 构造函数 必须实例化消息解码器
 	 * @param iWebSocketDecoder
+	 * @throws Exception 
 	 */
-	public BaseRobot(IWebSocketDecoder iWebSocketDecoder) {
-		wsClient=new WSClient(iWebSocketDecoder, this);
+	public BaseRobot(IWebSocketDecoder iWebSocketDecoder) throws Exception {
+		
+		this.iWebSocketDecoder=iWebSocketDecoder;
 		connectTypeEnum=ConnectTypeEnum.CONNECT_BY_WEBSOCKET;
 	}
 	
@@ -46,6 +56,7 @@ public abstract class BaseRobot {
 		if(controllerMap.containsKey(controller.getClass())) {
 			return ;
 		}
+		controller.init();
 		controllerMap.put(controller.getClass(), controller);
 		controllerList.add(controller);
 	}
@@ -54,8 +65,24 @@ public abstract class BaseRobot {
 	 * 轮询触发事件
 	 */
 	public void run() {
-		
+		controllerList.stream().filter(controller->{
+			return controller.canUse()&&controller.checkRun();
+		}).forEach(controller->{
+			asyTask(new Runnable() {
+				@Override
+				public void run() {
+					controller.run(); 
+				}
+			});
+		});
 	}
+	
+	public void connect() throws Exception {
+		wsClient=new NWSClient(iWebSocketDecoder, this);
+		wsClient.connect();
+	}
+	
+	
 	
 	/**
 	 * 获取机器人连接类型 
@@ -85,11 +112,12 @@ public abstract class BaseRobot {
 	
 	/**
 	 * 关闭连接
+	 * @throws IOException 
 	 */
-	public void disconnect() {
+	public void disconnect() throws Exception {
 		switch (connectTypeEnum) {
 			case CONNECT_BY_WEBSOCKET:
-					wsClient.close();
+				wsClient.close();	
 				break;
 			default:
 				break;
@@ -105,17 +133,42 @@ public abstract class BaseRobot {
 	 * 消息回调
 	 * @param arg0
 	 */
-	public abstract void onMessage(String arg0);
+	public void onMessage(String arg0) {
+		JSONObject jsonObject=JSON.parseObject(arg0);
+		if(!jsonObject.containsKey("method")) {
+			return ;
+		}
+		String string = jsonObject.getString("method");
+		controllerList.stream().filter(controller->{
+			return controller.canUse()&&controller.hasMethod(string);
+		}).forEach(controller->{
+			controller.onMessage(jsonObject);
+		});
+	}
+	
+	/**
+	 * 异步任务 要经常使用
+	 * @param runnable
+	 */
+	public void asyTask(Runnable runnable) {
+		int threadId = getThreadId();
+		RobotCoreManager.getInstance().addTask(threadId, runnable);
+	}
 	
 	/**
 	 * 错误回调
 	 * @param e
 	 */
-	public abstract void onError(Exception e);
+	public abstract void onError(Throwable e);
 	
 	/**
 	 * 连接断开回调
 	 */
 	public abstract void onClose();
+	
+	
+	public abstract int getThreadId();
+	
+	public abstract String getId();
 	
 }
